@@ -39,7 +39,4 @@ class CharTokenizer:
          self.vocab_size = len(character_set) + 1
          result = self.character_to_id(character_set)
          self.id_to_character(result)
-       
 
-stories = ds['text']
-tok = CharTokenizer(stories)
