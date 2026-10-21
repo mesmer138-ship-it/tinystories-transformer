@@ -43,4 +43,3 @@ class CharTokenizer:
 
 stories = ds['text']
 tok = CharTokenizer(stories)
-tok.decode(tok.encode(stories[0]))
