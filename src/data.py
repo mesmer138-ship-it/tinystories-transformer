@@ -1,4 +1,5 @@
 import random
+from datasets import load_dataset
 
 def split_stories(stories, val_fraction, seed):
     stories_copy = list(stories)
@@ -9,4 +10,5 @@ def split_stories(stories, val_fraction, seed):
     return train_stories, val_stories 
     
 def load_stories(data_slice):
-    return cfg.data_slice
+    ds = load_dataset("roneneldan/TinyStories", split=data_slice)
+    return ds['text']
