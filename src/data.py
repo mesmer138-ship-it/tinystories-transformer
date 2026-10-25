@@ -1,5 +1,6 @@
 import random
 from datasets import load_dataset
+import torch
 
 def split_stories(stories, val_fraction, seed):
     stories_copy = list(stories)
@@ -12,3 +13,9 @@ def split_stories(stories, val_fraction, seed):
 def load_stories(data_slice):
     ds = load_dataset("roneneldan/TinyStories", split=data_slice)
     return ds['text']
+    
+def encode_stories(stories,tok):
+    text = "\n\n".join(stories)
+    stories_ids = tok.encode(text)
+    stories_tensor = torch.tensor(stories_ids,dtype=torch.long)
+    return stories_tensor
