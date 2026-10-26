@@ -19,3 +19,16 @@ def encode_stories(stories,tok):
     stories_ids = tok.encode(text)
     stories_tensor = torch.tensor(stories_ids,dtype=torch.long)
     return stories_tensor
+    
+def get_batch(data,batch_size,block_size):
+    starts = torch.randint(0,len(data)-block_size,(batch_size,))
+    x_list = []
+    y_list = []
+    for i in starts:
+      x_block = data[i:i+block_size]
+      y_block = data[i+1:i+block_size+1]
+      x_list.append(x_block)
+      y_list.append(y_block)
+    x = torch.stack(x_list)
+    y = torch.stack(y_list)
+    return x, y
