@@ -7,3 +7,6 @@ class Config:
     val_fraction: float = 0.1
     batch_size: int = 32
     block_size: int = 64
+    n_embd = 64
+    head_size = 16
+    
