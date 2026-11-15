@@ -8,7 +8,7 @@ class Config:
     batch_size: int = 32
     block_size: int = 64
     n_embd = 64
-    n_head: int = 4
+    n_heads: int = 4
     head_size = n_embd // n_head
    
     
