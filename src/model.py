@@ -44,6 +44,16 @@ class MLP(torch.nn.Module):
     mlp_output = self.second_layer(hidden_relu)
     return mlp_output
       
-      
+class Block(torch.nn.Module):
+  def __init__(self,n_heads,n_embd,block_size):
+    super().__init__()
+    self.ln1 = torch.nn.LayerNorm(n_embd)
+    self.attn = MultiHeadAttention(n_heads,n_embd,block_size)
+    self.ln2 = torch.nn.LayerNorm(n_embd)
+    self.mlp = MLP(n_embd)
+  def forward(self,x):
+    x = x+self.attn(self.ln1(x))
+    x = x+self.mlp(self.ln2(x))
+    return x
 
 
