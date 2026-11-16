@@ -55,5 +55,23 @@ class Block(torch.nn.Module):
     x = x+self.attn(self.ln1(x))
     x = x+self.mlp(self.ln2(x))
     return x
+class TinyLM(torch.nn.Module):
+  def __init__(self,vocab_size,n_embd,n_heads,n_layer,block_size):
+    super().__init__()
+    self.token_emb = torch.nn.Embedding(vocab_size,n_embd)
+    self.pos_emb = torch.nn.Embedding(block_size,n_embd)
+    self.blocks = torch.nn.Sequential(*[Block(n_heads,n_embd,block_size) for _ in range(n_layer)])
+    self.ln_f = torch.nn.LayerNorm(n_embd)
+    self.lm_head = torch.nn.Linear(n_embd,vocab_size)
+
+  def forward(self,idx):
+    B,T = idx.shape
+    tok = self.token_emb(idx)
+    pos = self.pos_emb(torch.arange(T,device=idx.device))
+    x = tok + pos
+    x = self.blocks(x)
+    x = self.ln_f(x)
+    logits = self.lm_head(x)
+    return logits
 
 
