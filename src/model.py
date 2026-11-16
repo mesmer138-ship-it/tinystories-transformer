@@ -31,7 +31,17 @@ class MultiHeadAttention(torch.nn.Module):
       outputs = [h(x) for h in self.heads]
       concat = torch.cat(outputs,dim=-1)
       return self.proj(concat)
-      
+class MLP(torch.nn.Module):
+  def __init__(self,n_embd):
+    super().__init__()
+    self.layer = torch.nn.Linear(n_embd,4*n_embd,bias=True)
+    self.relu = torch.nn.ReLU()
+    self.second_layer = torch.nn.Linear(4*n_embd,n_embd,bias=True)
+  def forward(self,x):
+    hidden = self.layer(x)
+    hidden_relu = self.relu(hidden)
+    mlp_output = self.second_layer(hidden_relu)
+    return mlp_output
       
       
 
