@@ -10,5 +10,6 @@ class Config:
     n_embd = 64
     n_heads: int = 4
     head_size = n_embd // n_heads
+    n_layer: int = 4
    
     
