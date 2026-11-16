@@ -31,6 +31,7 @@ class MultiHeadAttention(torch.nn.Module):
       outputs = [h(x) for h in self.heads]
       concat = torch.cat(outputs,dim=-1)
       return self.proj(concat)
+    
 class MLP(torch.nn.Module):
   def __init__(self,n_embd):
     super().__init__()
