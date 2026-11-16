@@ -11,6 +11,6 @@ class Config:
     n_heads: int = 4
     head_size = n_embd // n_heads
     n_layer: int = 4
-    learning_rate = 1e-3
+    learning_rate: float = 1e-3
    
     
