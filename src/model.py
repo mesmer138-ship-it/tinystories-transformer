@@ -73,5 +73,16 @@ class TinyLM(torch.nn.Module):
     x = self.ln_f(x)
     logits = self.lm_head(x)
     return logits
+    
+  def generate(self,idx,max_new_tokens):
+    with torch.no_grad():
+      for _ in range(max_new_tokens):
+        
 
+
+
+
+
+
+    
 
