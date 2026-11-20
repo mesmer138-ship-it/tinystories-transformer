@@ -14,7 +14,7 @@ class Config:
     max_steps: int = 1000
     eval_interval: int = 100
     eval_iters: int = 10
-    run_name: str = "baseline_seed42"
+    run_name: str = "gpu_test_seed42"
     log_dir: str = "/content/mydrive/MyDrive/runs"
    
     
