@@ -63,7 +63,7 @@ class TinyLM(torch.nn.Module):
     self.blocks = torch.nn.Sequential(*[Block(n_heads,n_embd,block_size) for _ in range(n_layer)])
     self.ln_f = torch.nn.LayerNorm(n_embd)
     self.lm_head = torch.nn.Linear(n_embd,vocab_size)
-    self.block_size = 64
+    self.block_size = block_size
 
   def forward(self,idx):
     B,T = idx.shape
