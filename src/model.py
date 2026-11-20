@@ -77,6 +77,14 @@ class TinyLM(torch.nn.Module):
   def generate(self,idx,max_new_tokens):
     with torch.no_grad():
       for _ in range(max_new_tokens):
+        idx_copy = idx[:,-(self.block_size):]
+        logits = self(idx_copy)
+        softmax_result = torch.softmax(logits[:,-1,:],dim=-1)
+        next_id = torch.multinomial(softmax_result,num_samples=1)
+        idx = torch.cat([idx,next_id],dim=1)
+      return idx
+        
+        
         
 
 
