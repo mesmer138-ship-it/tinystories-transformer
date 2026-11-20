@@ -8,6 +8,8 @@ from src.data import load_stories, split_stories, encode_stories, get_batch
 from config import Config
 cfg = Config()
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 set_seed(cfg.seed)
 data = load_stories(cfg.data_slice)
 train_stories,val_stories = split_stories(data,cfg.val_fraction,cfg.seed)
@@ -18,10 +20,14 @@ val_ids =  encode_stories(val_stories,tok)
 writer = SummaryWriter(f"{cfg.log_dir}/{cfg.run_name}")
 writer.add_text("config",str(cfg))
 tiny_lm = TinyLM(tok.vocab_size,cfg.n_embd,cfg.n_heads,cfg.n_layer,cfg.block_size)
+tiny_lm = tiny_lm.to(device)
 optimizer = torch.optim.AdamW(tiny_lm.parameters(),lr=cfg.learning_rate)
+
 
 for num in range(cfg.max_steps):
   x,y = get_batch(train_ids,cfg.batch_size,cfg.block_size)
+  x = x.to(device)
+  y = y.to(device)
   logits = tiny_lm(x)
 
   B,T,C = logits.shape
@@ -42,6 +48,8 @@ for num in range(cfg.max_steps):
     with torch.no_grad():
       for _ in range(cfg.eval_iters):
         v_x,v_y = get_batch(val_ids,cfg.batch_size,cfg.block_size)
+        v_x = v_x.to(device)
+        v_y = v_y.to(device)
         v_logits = tiny_lm(v_x)
         v_B,v_T,v_C = v_logits.shape
         v_logits_flat = v_logits.view(-1,v_C)
