@@ -1,7 +1,7 @@
 #Training Loop
 import torch
 from torch.utils.tensorboard import SummaryWriter
-from src.utils import set_seed
+from src.utils import set_seed, get_lr
 from src.model import TinyLM
 from src.tokenizer import CharTokenizer
 from src.data import load_stories, split_stories, encode_stories, get_batch
@@ -29,13 +29,18 @@ for num in range(cfg.max_steps):
   x = x.to(device)
   y = y.to(device)
   logits = tiny_lm(x)
+  
 
   B,T,C = logits.shape
   logits_flat = logits.view(-1,C)
   y_flat = y.view(-1)
+ 
 
   loss = torch.nn.functional.cross_entropy(logits_flat,y_flat)
 
+  lr = get_lr(num,cfg)
+  for group in optimizer.param_groups:
+    group['lr'] = lr
   optimizer.zero_grad()
   loss.backward()
   optimizer.step()
@@ -62,4 +67,5 @@ for num in range(cfg.max_steps):
     print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
     writer.add_scalar("loss/train",loss.item(),num)
     writer.add_scalar("loss/val",val_average_loss,num)
+    writer.add_scalar("lr",lr,num)
 writer.close()
