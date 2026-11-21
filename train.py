@@ -67,5 +67,5 @@ for num in range(cfg.max_steps):
     print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
     writer.add_scalar("loss/train",loss.item(),num)
     writer.add_scalar("loss/val",val_average_loss,num)
-    writer.add_scalar("lr",lr,num)
+    #writer.add_scalar("lr",lr,num)
 writer.close()
