@@ -16,5 +16,7 @@ class Config:
     eval_iters: int = 10
     run_name: str = "gpu_test_seed42"
     log_dir: str = "/content/mydrive/MyDrive/runs"
+    warmup_steps: int = 50
+    min_lr: float = 1e-4
    
     
