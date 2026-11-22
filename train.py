@@ -22,7 +22,7 @@ writer.add_text("config",str(cfg))
 tiny_lm = TinyLM(tok.vocab_size,cfg.n_embd,cfg.n_heads,cfg.n_layer,cfg.block_size)
 tiny_lm = tiny_lm.to(device)
 optimizer = torch.optim.AdamW(tiny_lm.parameters(),lr=cfg.learning_rate)
-
+print(cfg)
 
 for num in range(cfg.max_steps):
   x,y = get_batch(train_ids,cfg.batch_size,cfg.block_size)
@@ -68,4 +68,5 @@ for num in range(cfg.max_steps):
     writer.add_scalar("loss/train",loss.item(),num)
     writer.add_scalar("loss/val",val_average_loss,num)
     writer.add_scalar("lr",lr,num)
+torch.save(tiny_lm.state_dict(),f"{cfg.log_dir}/{cfg.run_name}/model.pt")
 writer.close()
