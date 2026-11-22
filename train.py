@@ -38,9 +38,9 @@ for num in range(cfg.max_steps):
 
   loss = torch.nn.functional.cross_entropy(logits_flat,y_flat)
 
-  #lr = get_lr(num,cfg)
-  #for group in optimizer.param_groups:
-  #  group['lr'] = lr
+  lr = get_lr(num,cfg)
+  for group in optimizer.param_groups:
+    group['lr'] = lr
   optimizer.zero_grad()
   loss.backward()
   optimizer.step()
@@ -67,5 +67,5 @@ for num in range(cfg.max_steps):
     print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
     writer.add_scalar("loss/train",loss.item(),num)
     writer.add_scalar("loss/val",val_average_loss,num)
-    #writer.add_scalar("lr",lr,num)
+    writer.add_scalar("lr",lr,num)
 writer.close()
