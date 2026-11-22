@@ -14,7 +14,7 @@ class Config:
     max_steps: int = 1000
     eval_interval: int = 100
     eval_iters: int = 10
-    run_name: str = "cosine_lr3e-3_1k"
+    run_name: str = "fixed_lr_1k"
     log_dir: str = "/content/mydrive/MyDrive/runs"
     warmup_steps: int = 50
     min_lr: float = 1e-4
