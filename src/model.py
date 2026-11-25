@@ -16,11 +16,15 @@ class Head(torch.nn.Module):
       k = self.key(x)
       v = self.value(x)
       scores = q@k.transpose(-1,-2)
-      if scale_attn:
-        scaled_scores = scores/math.sqrt(self.head_size)
       T = x.shape[-2]
-      masked_scores = scaled_scores.masked_fill(self.tril[:T,:T]==0,float('-inf'))
+      if self.scale_attn:
+        pre_mask = scores/math.sqrt(self.head_size) 
+      else:
+        pre_mask = scores
+      self.scores = pre_mask
+      masked_scores = pre_mask.masked_fill(self.tril[:T,:T]==0,float('-inf'))
       softmax_result = torch.softmax(masked_scores,dim=-1)
+      self.weights = softmax_result
       return(softmax_result @ v)
 
 class MultiHeadAttention(torch.nn.Module):
