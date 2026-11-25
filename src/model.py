@@ -1,7 +1,7 @@
 import torch
 import math
 class Head(torch.nn.Module):
-  def __init__(self,head_size,block_size,n_embd):
+  def __init__(self,head_size,block_size,n_embd,scale_attn):
       super().__init__()
       self.query = torch.nn.Linear(n_embd,head_size,bias=False)
       self.key = torch.nn.Linear(n_embd,head_size,bias=False)
@@ -15,7 +15,8 @@ class Head(torch.nn.Module):
       k = self.key(x)
       v = self.value(x)
       scores = q@k.transpose(-1,-2)
-      scaled_scores = scores/math.sqrt(self.head_size)
+      if scale_attn:
+        scaled_scores = scores/math.sqrt(self.head_size)
       T = x.shape[-2]
       masked_scores = scaled_scores.masked_fill(self.tril[:T,:T]==0,float('-inf'))
       softmax_result = torch.softmax(masked_scores,dim=-1)
