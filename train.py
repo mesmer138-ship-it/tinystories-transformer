@@ -19,7 +19,7 @@ val_ids =  encode_stories(val_stories,tok)
 
 writer = SummaryWriter(f"{cfg.log_dir}/{cfg.run_name}")
 writer.add_text("config",str(cfg))
-tiny_lm = TinyLM(tok.vocab_size,cfg.n_embd,cfg.n_heads,cfg.n_layer,cfg.block_size)
+tiny_lm = TinyLM(tok.vocab_size,cfg.n_embd,cfg.n_heads,cfg.n_layer,cfg.block_size,cfg.scale_attn)
 tiny_lm = tiny_lm.to(device)
 optimizer = torch.optim.AdamW(tiny_lm.parameters(),lr=cfg.learning_rate)
 print(cfg)
