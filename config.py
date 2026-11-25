@@ -18,5 +18,6 @@ class Config:
     log_dir: str = "/content/mydrive/MyDrive/runs"
     warmup_steps: int = 50
     min_lr: float = 6e-4
+    scale_attn: bool = True
    
     
