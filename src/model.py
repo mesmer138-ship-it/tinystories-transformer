@@ -10,6 +10,7 @@ class Head(torch.nn.Module):
       mask = torch.ones((block_size,block_size))
       tril = torch.tril(mask)
       self.register_buffer("tril",tril)
+      self.scale_attn = scale_attn
   def forward(self,x):
       q = self.query(x)
       k = self.key(x)
