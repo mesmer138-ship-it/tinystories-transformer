@@ -23,7 +23,7 @@ class Head(torch.nn.Module):
       return(softmax_result @ v)
 
 class MultiHeadAttention(torch.nn.Module):
-  def __init__(self,n_heads,n_embd,block_size):
+  def __init__(self,n_heads,n_embd,block_size,scale_attn):
       super().__init__()
       head_size = n_embd // n_heads
       self.heads = torch.nn.ModuleList([Head(head_size,block_size,n_embd,scale_attn) for _ in range(n_heads)])
@@ -49,7 +49,7 @@ class Block(torch.nn.Module):
   def __init__(self,n_heads,n_embd,block_size):
     super().__init__()
     self.ln1 = torch.nn.LayerNorm(n_embd)
-    self.attn = MultiHeadAttention(n_heads,n_embd,block_size)
+    self.attn = MultiHeadAttention(n_heads,n_embd,block_size,scale_attn)
     self.ln2 = torch.nn.LayerNorm(n_embd)
     self.mlp = MLP(n_embd)
   def forward(self,x):
