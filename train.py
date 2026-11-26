@@ -34,10 +34,7 @@ for num in range(cfg.max_steps):
   B,T,C = logits.shape
   logits_flat = logits.view(-1,C)
   y_flat = y.view(-1)
- 
-
   loss = torch.nn.functional.cross_entropy(logits_flat,y_flat)
-
   lr = get_lr(num,cfg)
   for group in optimizer.param_groups:
     group['lr'] = lr
@@ -47,9 +44,7 @@ for num in range(cfg.max_steps):
   
 
   if num % cfg.eval_interval == 0:
-
     val_total = 0
-    
     with torch.no_grad():
       for _ in range(cfg.eval_iters):
         v_x,v_y = get_batch(val_ids,cfg.batch_size,cfg.block_size)
@@ -68,5 +63,6 @@ for num in range(cfg.max_steps):
     writer.add_scalar("loss/train",loss.item(),num)
     writer.add_scalar("loss/val",val_average_loss,num)
     writer.add_scalar("lr",lr,num)
+    
 torch.save(tiny_lm.state_dict(),f"{cfg.log_dir}/{cfg.run_name}/model.pt")
 writer.close()
