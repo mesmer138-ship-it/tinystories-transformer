@@ -61,13 +61,11 @@ for num in range(cfg.max_steps):
         val_total += val_loss.item()
       
     val_average_loss = val_total/cfg.eval_iters
-    print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
-    print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
-    print(f"  std: {scores_std:.3f}, max weight: {peakedness:.3f}, query grad: {gradient_size:.4f}")
     scores_std = head.scores.std().item()
     peakedness = head.weights.max(dim=-1).values.mean().item()
     gradient_size = head.query.weight.grad.norm().item()
-    print(f"std:{scores_std:.3f}")
+    print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
+    print(f"  std: {scores_std:.3f}, max weight: {peakedness:.3f}, query grad: {gradient_size:.4f}")
     writer.add_scalar("loss/train",loss.item(),num)
     writer.add_scalar("attn/score_std",scores_std,num)
     writer.add_scalar("attn/max_weight",peakedness,num)
