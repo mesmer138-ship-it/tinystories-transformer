@@ -14,10 +14,10 @@ class Config:
     max_steps: int = 5000
     eval_interval: int = 100
     eval_iters: int = 10
-    run_name: str = "unscaled_scheduled_lr6e-3_5k"
+    run_name: str = "scaled_scheduled_lr6e-3_5k_std_peakedness_gradient_check"
     log_dir: str = "/content/mydrive/MyDrive/runs"
     warmup_steps: int = 50
     min_lr: float = 6e-4
-    scale_attn: bool = False
+    scale_attn: bool = True
    
     
