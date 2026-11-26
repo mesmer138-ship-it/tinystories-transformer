@@ -21,6 +21,7 @@ writer = SummaryWriter(f"{cfg.log_dir}/{cfg.run_name}")
 writer.add_text("config",str(cfg))
 tiny_lm = TinyLM(tok.vocab_size,cfg.n_embd,cfg.n_heads,cfg.n_layer,cfg.block_size,cfg.scale_attn)
 tiny_lm = tiny_lm.to(device)
+head = tiny_lm.blocks[0].attn.heads[0]
 optimizer = torch.optim.AdamW(tiny_lm.parameters(),lr=cfg.learning_rate)
 print(cfg)
 
@@ -29,6 +30,7 @@ for num in range(cfg.max_steps):
   x = x.to(device)
   y = y.to(device)
   logits = tiny_lm(x)
+  
   
 
   B,T,C = logits.shape
@@ -44,6 +46,7 @@ for num in range(cfg.max_steps):
   
 
   if num % cfg.eval_interval == 0:
+    
     val_total = 0
     with torch.no_grad():
       for _ in range(cfg.eval_iters):
@@ -54,13 +57,21 @@ for num in range(cfg.max_steps):
         v_B,v_T,v_C = v_logits.shape
         v_logits_flat = v_logits.view(-1,v_C)
         v_y_flat = v_y.view(-1)
-
         val_loss = torch.nn.functional.cross_entropy(v_logits_flat,v_y_flat)
         val_total += val_loss.item()
       
     val_average_loss = val_total/cfg.eval_iters
     print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
+    print(f"step {num}: train: {loss.item():.3f}, val: {val_average_loss:.3f}")
+    print(f"  std: {scores_std:.3f}, max weight: {peakedness:.3f}, query grad: {gradient_size:.4f}")
+    scores_std = head.scores.std().item()
+    peakedness = head.weights.max(dim=-1).values.mean().item()
+    gradient_size = head.query.weight.grad.norm().item()
+    print(f"std:{scores_std:.3f}")
     writer.add_scalar("loss/train",loss.item(),num)
+    writer.add_scalar("attn/score_std",scores_std,num)
+    writer.add_scalar("attn/max_weight",peakedness,num)
+    writer.add_scalar("attn/query_grad_norm",gradient_size,num)
     writer.add_scalar("loss/val",val_average_loss,num)
     writer.add_scalar("lr",lr,num)
     
